@@ -15,6 +15,9 @@ from urllib.parse import unquote
 from tqdm import tqdm
 from collections import defaultdict
 import pandas as pd
+import pickle
+from urllib.parse import urlparse, parse_qs
+
 
 if __name__ == '__main__':
     logging.basicConfig(level = logging.INFO, format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -28,6 +31,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     url = args.url
     output = args.output
+    project_id = parse_qs(urlparse(url).query)["id"][0]
     
     # set static vars
     building_http_prefix = 'http://zjj.sz.gov.cn/ris/bol/szfdc/'
@@ -91,11 +95,19 @@ if __name__ == '__main__':
                 item[key] = value
         private_key = item[u'项目楼栋情况'] + item[u'座号']
         tables[private_key].append(item)
+    project = ""
+    for kword in zip(*list(tables.keys())):
+        if len(set(kword))>1:
+            break
+        else:
+            project += kword[0]
     os.makedirs(output, exist_ok=True)
+    os.makedirs(os.path.join(output, project), exist_ok=True)
     for private_key, table in tables.items():
         logging.info(private_key)
         table = sorted(table, key=lambda x: int(x['房号']), reverse=True)
         df = pd.DataFrame(data=table)
-        df.to_excel(os.path.join(output, '%s.xls' % private_key))
+        df.to_excel(os.path.join(output, project, '%s.xls' % private_key))
+    pickle.dump(dict(tables), open(os.path.join(output, '%s.pkl'%project_id), 'wb'))
         
-        
+    
