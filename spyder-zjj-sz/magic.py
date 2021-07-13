@@ -37,7 +37,7 @@ if __name__ == '__main__':
         else:
             project += kword[0]
     # format
-    writer = pd.ExcelWriter(os.path.join(output, '%s.xls' % project))
+    writer = pd.ExcelWriter(os.path.join(output, '%s.xlsx' % project))
     for private_key, table in sorted(tables.items(), key=lambda x: x[0]):
         logging.info(private_key)
         matrix = defaultdict(lambda:{})
