@@ -46,7 +46,10 @@ if __name__ == '__main__':
             room_number = item["房号"][-2:]
             matrix["%s-%s"%(room_number, u"房号")][item["楼层"]] = item["房号"]
             area = float(re.sub('[^\d.]', '', item["建筑面积"]))
-            price = float(re.sub('[^\d.]', '', item["拟售价格"]))
+            try:
+                price = float(re.sub('[^\d.]', '', item["拟售价格"]))
+            except:
+                price = 0
             total_price = "%s 万元" % (area*price / 1e4)
             matrix["%s-%s"%(room_number, u"总价")][item["楼层"]] = total_price
             matrix["%s-%s"%(room_number, u"单价")][item["楼层"]] = item["拟售价格"]
