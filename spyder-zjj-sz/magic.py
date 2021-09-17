@@ -41,7 +41,10 @@ if __name__ == '__main__':
     for private_key, table in sorted(tables.items(), key=lambda x: x[0]):
         logging.info(private_key)
         matrix = defaultdict(lambda:{})
-        table = sorted(table, key=lambda x: int(x['房号']))
+        try:
+            table = sorted(table, key=lambda x: int(x['房号']))
+        except:
+            table = sorted(table, key=lambda x: x['房号'])
         for item in table:
             room_number = item["房号"][-2:]
             matrix["%s-%s"%(room_number, u"房号")][item["楼层"]] = item["房号"]

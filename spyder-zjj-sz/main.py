@@ -117,7 +117,10 @@ if __name__ == '__main__':
     os.makedirs(os.path.join(output, project), exist_ok=True)
     for private_key, table in tables.items():
         logging.info(private_key)
-        table = sorted(table, key=lambda x: int(x['房号']), reverse=True)
+        try:
+            table = sorted(table, key=lambda x: int(x['房号']), reverse=True)
+        except:
+            table = sorted(table, key=lambda x: x['房号'], reverse=True)
         df = pd.DataFrame(data=table)
         df.to_excel(os.path.join(output, project, '%s.xls' % private_key))
     pickle.dump(dict(tables), open(os.path.join(output, '%s.pkl'%project_id), 'wb'))
